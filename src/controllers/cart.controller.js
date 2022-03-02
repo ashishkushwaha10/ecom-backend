@@ -95,8 +95,6 @@ class CartController {
 
     async updateProductDetails(req, res) {
         try {
-            let updateObj = {};
-
             if (!('itemId' in req.body) || req.body.itemId == '')
                 return res.status(400).send({ errorCode: 1, errorStatus: "itemId is required" });
 
@@ -113,6 +111,11 @@ class CartController {
             cartData = JSON.parse(cartData);
             
             let cartItem = cartData.filter(item => item.itemId == req.body.itemId);
+
+            if(cartItem.length < 1) {
+                return res.status(400).send({ errorCode: 1, errorStatus: "No data found." });
+            }
+
 
             if(req.body.action.toLowerCase() == "sub" && parseInt(cartItem[0].quantity) == 1) {
                 return res.status(400).send({ errorCode: 1, errorStatus: "Minimum quantity reached, Please remove item from cart." });
